@@ -1066,7 +1066,7 @@
         var aggregations = service.getAggregations( grid );
 
         var createNode = function( row ){
-          if ( typeof(row.entity.$$treeLevel) !== 'undefined' && row.treeLevel !== row.entity.$$treeLevel ){
+          if ( !row.internalRow && row.treeLevel !== row.entity.$$treeLevel ){
             row.treeLevel = row.entity.$$treeLevel;
           }
 
