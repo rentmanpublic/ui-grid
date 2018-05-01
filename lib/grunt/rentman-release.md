@@ -1,0 +1,6 @@
+- Run grunt tasks: 'clean', 'ngtemplates', 'build', 'copy:less_dist'
+- Create temporary branch
+- Force add all files in the dist/release directory (git add --force *.*)
+- Add version tag
+- Delete temporary branch
+- Push the main branch with all tags enabled
