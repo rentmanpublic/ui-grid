@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     data: {
       pkg: grunt.file.readJSON('package.json'),
       version: util.getVersion(),
-      stable_version: util.getStableVersion(),
+      // stable_version: util.getStableVersion(),
       latestAngular: util.latestAngular(),
       angularTestVersions: util.angulars(),
       dist: 'dist',
