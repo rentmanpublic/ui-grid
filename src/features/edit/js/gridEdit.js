@@ -528,7 +528,7 @@
                   if ($scope.col.colDef.enableCellEditOnFocus) {
                     // Don't begin edit if the cell hasn't changed
                     if (newRowCol.row === $scope.row && newRowCol.col === $scope.col &&
-                      (evt === null || (evt && (evt.type === 'click' || evt.type === 'keydown')))) {
+                      (evt === null || (evt && (evt.type === 'click' || evt.type === 'keydown' || evt.type === 'focus')))) {
                       $timeout(function() {
                         beginEdit(evt);
                       });
