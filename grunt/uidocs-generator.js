@@ -7,12 +7,12 @@ module.exports = {
       waitEval: "(function() { var ret = true; try { angular.module('ui.grid'); } catch (e) { ret = false; } return ret; })()",
       versions: {
         stable: [
-          { src: '/release/<%= pkg.name %>.js', type: 'script' },
-          { src: '/release/<%= pkg.name %>.css', type: 'css' }
+          { src: '/release/<%= pkg.unscopedname %>.js', type: 'script' },
+          { src: '/release/<%= pkg.unscopedname %>.css', type: 'css' }
         ],
         unstable: [
-          { src: '/release/<%= pkg.name %>-unstable.js', type: 'script' },
-          { src: '/release/<%= pkg.name %>-unstable.css', type: 'css' }
+          { src: '/release/<%= pkg.unscopedname %>-unstable.js', type: 'script' },
+          { src: '/release/<%= pkg.unscopedname %>-unstable.css', type: 'css' }
         ]
       }
     },
@@ -34,15 +34,15 @@ module.exports = {
       'node_modules/marked/lib/marked.js'
     ],
     httpScripts: [
-      // process.env.TRAVIS ? '/release/<%= pkg.name %>.unstable.js' : '/release/<%= pkg.name %>.js'
-      // '/release/<%= pkg.name %>.js'
+      // process.env.TRAVIS ? '/release/<%= pkg.unscopedname %>.unstable.js' : '/release/<%= pkg.unscopedname %>.js'
+      // '/release/<%= pkg.unscopedname %>.js'
     ],
     styles: [
       'misc/doc/css/prettify.css',
       //'misc/doc/css/bootstrap-flatly.min.css',
       //'misc/doc/css/docs.css',
-      // process.env.TRAVIS ? '<%= dist %>/release/<%= pkg.name %>.unstable.css' : '<%= dist %>/release/<%= pkg.name %>.css'
-      // '<%= dist %>/release/<%= pkg.name %>.css'
+      // process.env.TRAVIS ? '<%= dist %>/release/<%= pkg.unscopedname %>.unstable.css' : '<%= dist %>/release/<%= pkg.unscopedname %>.css'
+      // '<%= dist %>/release/<%= pkg.unscopedname %>.css'
     ],
     baseCSSPath: 'misc/doc/css/bootstrap-flatly.min.css',
     title: 'UI Grid',

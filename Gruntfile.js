@@ -53,6 +53,6 @@ module.exports = function(grunt) {
   util.updateConfig();
 
   grunt.loadTasks('lib/grunt');
-
+  
   // Tasks are now registered in the grunt/aliases.js file
 };
