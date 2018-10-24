@@ -1,6 +1,8 @@
-- Run grunt tasks: 'clean', 'build', 'copy:less_dist'
-- Create temporary branch
-- Force add all files in the dist/release directory (`git add --force .`)
-- Add version tag
-- Delete temporary branch
-- Push the tag to remote
+- Commit changes
+- Run `grunt bump-only`
+- Run `grunt changelog` (might not work if your commit messages are wrong)
+- Run `grunt bump-commit`
+- Push branch & tags
+- Run `grunt release` (Must be logged in with `rentman-user` on npm)
+
+
