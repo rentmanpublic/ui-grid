@@ -57,7 +57,7 @@
                   width += col.drawnWidth || col.width || 0;
                 }
 
-                if ($scope.side === 'right') {
+                if ($scope.side === 'right' && width > 0) {
                   width += gridUtil.getScrollbarWidth();
                 }
 
