@@ -53,7 +53,12 @@
                 var width = 0;
                 for (var i = 0; i < cols.length; i++) {
                   var col = cols[i];
+
                   width += col.drawnWidth || col.width || 0;
+                }
+
+                if ($scope.side === 'right') {
+                  width += gridUtil.getScrollbarWidth();
                 }
 
                 return width;
