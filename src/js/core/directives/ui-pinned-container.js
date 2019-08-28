@@ -21,7 +21,7 @@
             // gridUtil.logDebug('ui-grid-pinned-container ' + $scope.side + ' link');
 
             var grid = uiGridCtrl.grid;
-
+			var scrollbarWidth = gridUtil.getScrollbarWidth();
             var myWidth = 0;
 
             $elm.addClass('ui-grid-pinned-container-' + $scope.side);
@@ -58,7 +58,7 @@
                 }
 
                 if ($scope.side === 'right' && width > 0) {
-                  width += gridUtil.getScrollbarWidth();
+                  width += scrollbarWidth;
                 }
 
                 return width;
