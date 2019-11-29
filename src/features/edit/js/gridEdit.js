@@ -449,8 +449,8 @@
    */
 
   module.directive('uiGridCell',
-    ['$compile', '$injector', '$timeout', 'uiGridConstants', 'uiGridEditConstants', 'uiGridCellNavConstants', 'gridUtil', '$parse', 'uiGridEditService', '$rootScope', '$q',
-      function ($compile, $injector, $timeout, uiGridConstants, uiGridEditConstants, uiGridCellNavConstants, gridUtil, $parse, uiGridEditService, $rootScope, $q) {
+    ['$compile', '$injector', '$timeout', 'uiGridConstants', 'uiGridEditConstants', 'uiGridCellNavConstants', 'gridUtil', '$parse', 'uiGridEditService', '$rootScope', '$q', 'GridRowColumn',
+      function ($compile, $injector, $timeout, uiGridConstants, uiGridEditConstants, uiGridCellNavConstants, gridUtil, $parse, uiGridEditService, $rootScope, $q, GridRowColumn) {
         var touchstartTimeout = 500;
         if ($injector.has('uiGridCellNavService')) {
           var uiGridCellNavService = $injector.get('uiGridCellNavService');
@@ -476,7 +476,6 @@
 
             var cellNavNavigateDereg = function() {};
             var viewPortKeyDownDereg = function() {};
-
 
             var setEditable = function() {
               if ($scope.col.colDef.enableCellEdit && $scope.row.enableCellEdit !== false) {
@@ -525,6 +524,17 @@
                 });
 
                 cellNavNavigateDereg = uiGridCtrl.grid.api.cellNav.on.navigate($scope, function (newRowCol, oldRowCol, evt) {
+                  if (
+	                  newRowCol.row === $scope.row
+	                  && newRowCol.col === $scope.col
+                  ) {
+	                  // Matches cellNav selector because it calls stopPropagation
+	                  $elm.find('div').on('mousedown', beginEdit);
+                  } else {
+	                  // Matches cellNav selector because it calls stopPropagation
+	                  $elm.find('div').off('mousedown', beginEdit);
+                  }
+
                   if ($scope.col.colDef.enableCellEditOnFocus) {
                     // Don't begin edit if the cell hasn't changed
                     if (newRowCol.row === $scope.row && newRowCol.col === $scope.col &&
@@ -535,28 +545,6 @@
                     }
                   }
                 });
-
-                var lastRowCol = null;
-
-				$scope.$on(uiGridCellNavConstants.CELL_NAV_EVENT, function (evt, newRowCol) {
-					// We can't use grid.cellNav.lastRowCol because it's set before function is called
-					if (lastRowCol === null) {
-						lastRowCol = newRowCol;
-
-						return;
-					}
-
-					if (
-						lastRowCol.col.uid === newRowCol.col.uid
-						&& lastRowCol.row.uid === newRowCol.row.uid
-						&& newRowCol.row.uid === $scope.row.uid
-						&& newRowCol.col.uid === $scope.col.uid
-					) {
-						beginEdit(evt);
-					}
-
-					lastRowCol = newRowCol;
-				});
               }
 
               $scope.beginEditEventsWired = true;
@@ -592,6 +580,8 @@
 
             function cancelBeginEditEvents() {
               $elm.off('dblclick', beginEdit);
+              // Matches cellNav selector because it calls stopPropagation
+              $elm.find('div').off('mousedown', beginEdit);
               $elm.off('keydown', beginEditKeyDown);
               $elm.off('touchstart', touchStart);
               cellNavNavigateDereg();
