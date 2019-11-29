@@ -449,8 +449,8 @@
    */
 
   module.directive('uiGridCell',
-    ['$compile', '$injector', '$timeout', 'uiGridConstants', 'uiGridEditConstants', 'gridUtil', '$parse', 'uiGridEditService', '$rootScope', '$q',
-      function ($compile, $injector, $timeout, uiGridConstants, uiGridEditConstants, gridUtil, $parse, uiGridEditService, $rootScope, $q) {
+    ['$compile', '$injector', '$timeout', 'uiGridConstants', 'uiGridEditConstants', 'uiGridCellNavConstants', 'gridUtil', '$parse', 'uiGridEditService', '$rootScope', '$q',
+      function ($compile, $injector, $timeout, uiGridConstants, uiGridEditConstants, uiGridCellNavConstants, gridUtil, $parse, uiGridEditService, $rootScope, $q) {
         var touchstartTimeout = 500;
         if ($injector.has('uiGridCellNavService')) {
           var uiGridCellNavService = $injector.get('uiGridCellNavService');
@@ -535,6 +535,28 @@
                     }
                   }
                 });
+
+                var lastRowCol = null;
+
+				$scope.$on(uiGridCellNavConstants.CELL_NAV_EVENT, function (evt, newRowCol) {
+					// We can't use grid.cellNav.lastRowCol because it's set before function is called
+					if (lastRowCol === null) {
+						lastRowCol = newRowCol;
+
+						return;
+					}
+
+					if (
+						lastRowCol.col.uid === newRowCol.col.uid
+						&& lastRowCol.row.uid === newRowCol.row.uid
+						&& newRowCol.row.uid === $scope.row.uid
+						&& newRowCol.col.uid === $scope.col.uid
+					) {
+						beginEdit(evt);
+					}
+
+					lastRowCol = newRowCol;
+				});
               }
 
               $scope.beginEditEventsWired = true;
