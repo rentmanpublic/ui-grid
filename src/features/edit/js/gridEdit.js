@@ -524,17 +524,6 @@
                 });
 
                 cellNavNavigateDereg = uiGridCtrl.grid.api.cellNav.on.navigate($scope, function (newRowCol, oldRowCol, evt) {
-                  if (
-	                  newRowCol.row === $scope.row
-	                  && newRowCol.col === $scope.col
-                  ) {
-	                  // Matches cellNav selector because it calls stopPropagation
-	                  $elm.find('div').on('mousedown', beginEdit);
-                  } else {
-	                  // Matches cellNav selector because it calls stopPropagation
-	                  $elm.find('div').off('mousedown', beginEdit);
-                  }
-
                   if ($scope.col.colDef.enableCellEditOnFocus) {
                     // Don't begin edit if the cell hasn't changed
                     if (newRowCol.row === $scope.row && newRowCol.col === $scope.col &&
@@ -545,6 +534,9 @@
                     }
                   }
                 });
+
+	            // Matches cellNav selector because it calls stopPropagation
+	            $elm.find('div').on('mousedown', maybeBeginEdit);
               }
 
               $scope.beginEditEventsWired = true;
@@ -581,12 +573,26 @@
             function cancelBeginEditEvents() {
               $elm.off('dblclick', beginEdit);
               // Matches cellNav selector because it calls stopPropagation
-              $elm.find('div').off('mousedown', beginEdit);
+              $elm.find('div').off('mousedown', maybeBeginEdit);
               $elm.off('keydown', beginEditKeyDown);
               $elm.off('touchstart', touchStart);
               cellNavNavigateDereg();
               viewPortKeyDownDereg();
               $scope.beginEditEventsWired = false;
+            }
+
+            function maybeBeginEdit (evt) {
+            	if (!uiGridCtrl || !uiGridCtrl.grid.api.cellNav) {
+            		return;
+	            }
+
+            	var rowCol = uiGridCtrl.grid.api.cellNav.getFocusedCell();
+
+            	if (rowCol === null || rowCol.col !== $scope.col || rowCol.row !== $scope.row) {
+            		return;
+	            }
+
+            	beginEdit(evt);
             }
 
             function beginEditKeyDown(evt) {
