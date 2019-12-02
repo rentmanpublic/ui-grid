@@ -939,7 +939,12 @@
 
             var selectCells = function (evt) {
               // if you click on expandable icon doesn't trigger selection
-              if (evt.target.className === "ui-grid-icon-minus-squared" || evt.target.className === "ui-grid-icon-plus-squared") {
+              if (
+              	evt.target.className === "ui-grid-icon-minus-squared"
+	            || evt.target.className === "ui-grid-icon-plus-squared"
+	            || evt.target.nodeName === 'INPUT'
+	            || evt.target.nodeName === 'SELECT'
+              ) {
                 return;
               }
 

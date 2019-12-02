@@ -476,6 +476,7 @@
 
             var cellNavNavigateDereg = function() {};
             var viewPortKeyDownDereg = function() {};
+            var cellNavBeginEditDereg = function() {};
 
             var setEditable = function() {
               if ($scope.col.colDef.enableCellEdit && $scope.row.enableCellEdit !== false) {
@@ -535,8 +536,34 @@
                   }
                 });
 
-	            // Matches cellNav selector because it calls stopPropagation
-	            $elm.find('div').on('mousedown', maybeBeginEdit);
+	              var cellHasFocus = false;
+
+	              cellNavBeginEditDereg = $scope.$on(
+		              uiGridCellNavConstants.CELL_NAV_EVENT,
+		              function (evt, newRowCol, modifierDown, originEvt) {
+			              if (
+				              newRowCol === undefined
+				              || newRowCol.row !== $scope.row
+				              || newRowCol.col !== $scope.col
+			              ) {
+				              cellHasFocus = false;
+
+				              return;
+			              }
+
+			              if (originEvt.type === 'focus') {
+				              return;
+			              }
+
+			              if (!cellHasFocus) {
+				              cellHasFocus = true;
+
+				              return;
+			              }
+
+			              beginEdit(originEvt);
+		              }
+	              );
               }
 
               $scope.beginEditEventsWired = true;
@@ -572,27 +599,12 @@
 
             function cancelBeginEditEvents() {
               $elm.off('dblclick', beginEdit);
-              // Matches cellNav selector because it calls stopPropagation
-              $elm.find('div').off('mousedown', maybeBeginEdit);
               $elm.off('keydown', beginEditKeyDown);
               $elm.off('touchstart', touchStart);
               cellNavNavigateDereg();
+              cellNavBeginEditDereg();
               viewPortKeyDownDereg();
               $scope.beginEditEventsWired = false;
-            }
-
-            function maybeBeginEdit (evt) {
-            	if (!uiGridCtrl || !uiGridCtrl.grid.api.cellNav) {
-            		return;
-	            }
-
-            	var rowCol = uiGridCtrl.grid.api.cellNav.getFocusedCell();
-
-            	if (rowCol === null || rowCol.col !== $scope.col || rowCol.row !== $scope.row) {
-            		return;
-	            }
-
-            	beginEdit(evt);
             }
 
             function beginEditKeyDown(evt) {
