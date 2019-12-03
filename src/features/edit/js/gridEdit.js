@@ -553,6 +553,7 @@
 
 			              if (
 			              	originEvt === undefined
+			                || originEvt === null
 				            || originEvt.type === 'focus'
 			              ) {
 				              return;
