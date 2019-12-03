@@ -551,7 +551,10 @@
 				              return;
 			              }
 
-			              if (originEvt.type === 'focus') {
+			              if (
+			              	originEvt === undefined
+				            || originEvt.type === 'focus'
+			              ) {
 				              return;
 			              }
 
