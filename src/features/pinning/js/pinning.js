@@ -210,7 +210,7 @@
         var removePinAction = {
           name: 'ui.grid.pinning.unpin',
           title: i18nService.get().pinning.unpin,
-          icon: 'ui-grid-icon-cancel',
+          icon: 'ui-grid-icon-unpin',
           shown: function () {
             return typeof(this.context.col.renderContainer) !== 'undefined' && this.context.col.renderContainer !== null && this.context.col.renderContainer !== 'body';
           },
