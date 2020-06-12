@@ -27,7 +27,7 @@
         },
         sort: {
           ascending: 'Asc.',
-          descending: 'Desc.',
+          descending: 'Disc.',
           remove: 'Annulla ordinamento'
         },
         column: {
@@ -43,7 +43,7 @@
         pinning: {
          pinLeft: 'Blocca a sx',
           pinRight: 'Blocca a dx',
-          unpin: 'Blocca in alto'
+          unpin: 'Sblocca'
         },
         gridMenu: {
           columns: 'Colonne:',
