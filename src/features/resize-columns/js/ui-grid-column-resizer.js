@@ -438,6 +438,7 @@
 	        if (gridWidth - (leftWidth + rightWidth) < 100) {
 		        col.width = oldWidth;
 		        col.hasCustomWidth = hadCustomWidth;
+		        xDiff = 0;
 	        }
 
 	        refreshCanvas(xDiff);
