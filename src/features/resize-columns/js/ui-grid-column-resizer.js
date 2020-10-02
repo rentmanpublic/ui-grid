@@ -311,6 +311,8 @@
             gridLeft = 0,
             rtlMultiplier = 1;
 
+	      var scrollbarWidth = gridUtil.getScrollbarWidth();
+
         // when in RTL mode reverse the direction using the rtlMultiplier and change the position to left
         if (uiGridCtrl.grid.isRTL()) {
           $scope.position = 'left';
@@ -422,20 +424,51 @@
 
           // Get the new width
           var newWidth = parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10);
+          var oldWidth = col.width;
+          var hadCustomWidth = col.hasCustomWidth;
 
           // check we're not outside the allowable bounds for this column
           col.width = constrainWidth(col, newWidth);
           col.hasCustomWidth = true;
 
-          refreshCanvas(xDiff);
+	        var leftWidth = getContainerWidth('left');
+	        var rightWidth = getContainerWidth('right');
+	        var gridWidth = uiGridCtrl.grid.element.width();
 
-          uiGridResizeColumnsService.fireColumnSizeChanged(uiGridCtrl.grid, col.colDef, xDiff);
+	        if (gridWidth - (leftWidth + rightWidth) < 100) {
+		        col.width = oldWidth;
+		        col.hasCustomWidth = hadCustomWidth;
+	        }
+
+	        refreshCanvas(xDiff);
+	        uiGridResizeColumnsService.fireColumnSizeChanged(uiGridCtrl.grid, col.colDef, xDiff);
 
           // stop listening of up and move events - wait for next down
           // reset the down events - we will have turned one off when this event started
           offAllEvents();
           onDownEvents();
         }
+
+        function getContainerWidth (side) {
+	      if (side !== 'left' && side !== 'right') {
+		      return;
+	      }
+
+	      var cols = uiGridCtrl.grid.renderContainers[side].visibleColumnCache;
+	      var width = 0;
+	      for (var i = 0; i < cols.length; i++) {
+		      var col = cols[i];
+
+		      // col.width gets prio over the drawnWidth because the column adjusted by dragging is not re-drawn yet
+		      width += col.width || col.drawnWidth || 0;
+	      }
+
+	      if (side === 'right' && width > 0) {
+		      width += scrollbarWidth;
+	      }
+
+	      return width;
+      }
 
 
         var downFunction = function(event, args) {
