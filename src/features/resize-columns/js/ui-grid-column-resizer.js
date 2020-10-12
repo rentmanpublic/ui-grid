@@ -435,7 +435,10 @@
 	        var rightWidth = getContainerWidth('right');
 	        var gridWidth = uiGridCtrl.grid.element.width();
 
-	        if (gridWidth - (leftWidth + rightWidth) < 100) {
+	        if (
+	        	newWidth > oldWidth
+		        && gridWidth - (leftWidth + rightWidth) < 100
+	        ) {
 		        col.width = oldWidth;
 		        col.hasCustomWidth = hadCustomWidth;
 		        xDiff = 0;
@@ -455,7 +458,13 @@
 		      return;
 	      }
 
-	      var cols = uiGridCtrl.grid.renderContainers[side].visibleColumnCache;
+	      var container = uiGridCtrl.grid.renderContainers[side];
+
+	      if (container === undefined) {
+	      	return 0;
+	      }
+
+	      var cols = container.visibleColumnCache;
 	      var width = 0;
 	      for (var i = 0; i < cols.length; i++) {
 		      var col = cols[i];
