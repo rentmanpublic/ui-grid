@@ -2363,43 +2363,45 @@ angular.module('ui.grid')
         // This is the index of the row we want to scroll to, within the list of rows that can be visible
         var seekRowIndex = visRowCache.indexOf(gridRow);
 
-        // Total vertical scroll length of the grid
-        var scrollLength = (self.renderContainers.body.getCanvasHeight() - self.renderContainers.body.getViewportHeight());
+        if (seekRowIndex > -1) {
+	        // Total vertical scroll length of the grid
+	        var scrollLength = (self.renderContainers.body.getCanvasHeight() - self.renderContainers.body.getViewportHeight());
 
-        // Add the height of the native horizontal scrollbar to the scroll length, if it's there. Otherwise it will mask over the final row
-        // if (self.horizontalScrollbarHeight && self.horizontalScrollbarHeight > 0) {
-        //   scrollLength = scrollLength + self.horizontalScrollbarHeight;
-        // }
+	        // Add the height of the native horizontal scrollbar to the scroll length, if it's there. Otherwise it will mask over the final row
+	        // if (self.horizontalScrollbarHeight && self.horizontalScrollbarHeight > 0) {
+	        //   scrollLength = scrollLength + self.horizontalScrollbarHeight;
+	        // }
 
-        // This is the minimum amount of pixels we need to scroll vertical in order to see this row.
-        var pixelsToSeeRow = (seekRowIndex * self.options.rowHeight + self.headerHeight);
+	        // This is the minimum amount of pixels we need to scroll vertical in order to see this row.
+	        var pixelsToSeeRow = (seekRowIndex * self.options.rowHeight + self.headerHeight);
 
-        // Don't let the pixels required to see the row be less than zero
-        pixelsToSeeRow = (pixelsToSeeRow < 0) ? 0 : pixelsToSeeRow;
+	        // Don't let the pixels required to see the row be less than zero
+	        pixelsToSeeRow = (pixelsToSeeRow < 0) ? 0 : pixelsToSeeRow;
 
-        var scrollPixels;
+	        var scrollPixels;
 
-        // If the scroll position we need to see the row is LESS than the top boundary, i.e. obscured above the top of the self...
-        if (pixelsToSeeRow < Math.floor(topBound)) {
-          // Get the different between the top boundary and the required scroll position and subtract it from the current scroll position\
-          //   to get the full position we need
-          scrollPixels = self.renderContainers.body.prevScrollTop - (topBound - pixelsToSeeRow);
+	        // If the scroll position we need to see the row is LESS than the top boundary, i.e. obscured above the top of the self...
+	        if (pixelsToSeeRow < Math.floor(topBound)) {
+		        // Get the different between the top boundary and the required scroll position and subtract it from the current scroll position\
+		        //   to get the full position we need
+		        scrollPixels = self.renderContainers.body.prevScrollTop - (topBound - pixelsToSeeRow);
 
-          // Since scrollIfNecessary is called multiple times when enableCellEditOnFocus is true we need to make sure the scrollbarWidth and
-          // footerHeight is accounted for to not cause a loop.
-          if (gridCol && gridCol.colDef && gridCol.colDef.enableCellEditOnFocus) {
-            scrollPixels = scrollPixels - self.footerHeight - self.scrollbarHeight;
-          }
+		        // Since scrollIfNecessary is called multiple times when enableCellEditOnFocus is true we need to make sure the scrollbarWidth and
+		        // footerHeight is accounted for to not cause a loop.
+		        if (gridCol && gridCol.colDef && gridCol.colDef.enableCellEditOnFocus) {
+			        scrollPixels = scrollPixels - self.footerHeight - self.scrollbarHeight;
+		        }
 
-          scrollEvent.y = getScrollY(scrollPixels, scrollLength, self.renderContainers.body.prevScrolltopPercentage);
-        }
-        // Otherwise if the scroll position we need to see the row is MORE than the bottom boundary, i.e. obscured below the bottom of the self...
-        else if (pixelsToSeeRow > Math.ceil(bottomBound)) {
-          // Get the different between the bottom boundary and the required scroll position and add it to the current scroll position
-          //   to get the full position we need
-          scrollPixels = pixelsToSeeRow - bottomBound + self.renderContainers.body.prevScrollTop;
+		        scrollEvent.y = getScrollY(scrollPixels, scrollLength, self.renderContainers.body.prevScrolltopPercentage);
+	        }
+	        // Otherwise if the scroll position we need to see the row is MORE than the bottom boundary, i.e. obscured below the bottom of the self...
+	        else if (pixelsToSeeRow > Math.ceil(bottomBound)) {
+		        // Get the different between the bottom boundary and the required scroll position and add it to the current scroll position
+		        //   to get the full position we need
+		        scrollPixels = pixelsToSeeRow - bottomBound + self.renderContainers.body.prevScrollTop;
 
-          scrollEvent.y = getScrollY(scrollPixels, scrollLength,self.renderContainers.body.prevScrolltopPercentage);
+		        scrollEvent.y = getScrollY(scrollPixels, scrollLength, self.renderContainers.body.prevScrolltopPercentage);
+	        }
         }
       }
 
@@ -2408,41 +2410,43 @@ angular.module('ui.grid')
         // This is the index of the column we want to scroll to, within the list of columns that can be visible
         var seekColumnIndex = visColCache.indexOf(gridCol);
 
-        // Total horizontal scroll length of the grid
-        var horizScrollLength = (self.renderContainers.body.getCanvasWidth() - self.renderContainers.body.getViewportWidth());
+        if (seekColumnIndex > -1) {
+	        // Total horizontal scroll length of the grid
+	        var horizScrollLength = (self.renderContainers.body.getCanvasWidth() - self.renderContainers.body.getViewportWidth());
 
-        // This is the minimum amount of pixels we need to scroll horizontal in order to see this column
-        var columnLeftEdge = 0;
-        for (var i = 0; i < seekColumnIndex; i++) {
-          var col = visColCache[i];
-          columnLeftEdge += col.drawnWidth;
-        }
-        columnLeftEdge = (columnLeftEdge < 0) ? 0 : columnLeftEdge;
+	        // This is the minimum amount of pixels we need to scroll horizontal in order to see this column
+	        var columnLeftEdge = 0;
+	        for (var i = 0; i < seekColumnIndex; i++) {
+		        var col = visColCache[i];
+		        columnLeftEdge += col.drawnWidth;
+	        }
+	        columnLeftEdge = (columnLeftEdge < 0) ? 0 : columnLeftEdge;
 
-        var columnRightEdge = columnLeftEdge + gridCol.drawnWidth;
+	        var columnRightEdge = columnLeftEdge + gridCol.drawnWidth;
 
-        // Don't let the pixels required to see the column be less than zero
-        columnRightEdge = (columnRightEdge < 0) ? 0 : columnRightEdge;
+	        // Don't let the pixels required to see the column be less than zero
+	        columnRightEdge = (columnRightEdge < 0) ? 0 : columnRightEdge;
 
-        var horizScrollPixels;
+	        var horizScrollPixels;
 
-        // If the scroll position we need to see the column is LESS than the left boundary, i.e. obscured before the left of the self...
-        if (columnLeftEdge < leftBound) {
-          // Get the different between the left boundary and the required scroll position and subtract it from the current scroll position\
-          //   to get the full position we need
-          horizScrollPixels = self.renderContainers.body.prevScrollLeft - (leftBound - columnLeftEdge);
+	        // If the scroll position we need to see the column is LESS than the left boundary, i.e. obscured before the left of the self...
+	        if (columnLeftEdge < leftBound) {
+		        // Get the different between the left boundary and the required scroll position and subtract it from the current scroll position\
+		        //   to get the full position we need
+		        horizScrollPixels = self.renderContainers.body.prevScrollLeft - (leftBound - columnLeftEdge);
 
-          // Turn the scroll position into a percentage and make it an argument for a scroll event
-          scrollEvent.x = getScrollX(horizScrollPixels, horizScrollLength, self.renderContainers.body.prevScrollleftPercentage);
-        }
-        // Otherwise if the scroll position we need to see the column is MORE than the right boundary, i.e. obscured after the right of the self...
-        else if (columnRightEdge > rightBound) {
-          // Get the different between the right boundary and the required scroll position and add it to the current scroll position
-          //   to get the full position we need
-          horizScrollPixels = columnRightEdge - rightBound + self.renderContainers.body.prevScrollLeft;
+		        // Turn the scroll position into a percentage and make it an argument for a scroll event
+		        scrollEvent.x = getScrollX(horizScrollPixels, horizScrollLength, self.renderContainers.body.prevScrollleftPercentage);
+	        }
+	        // Otherwise if the scroll position we need to see the column is MORE than the right boundary, i.e. obscured after the right of the self...
+	        else if (columnRightEdge > rightBound) {
+		        // Get the different between the right boundary and the required scroll position and add it to the current scroll position
+		        //   to get the full position we need
+		        horizScrollPixels = columnRightEdge - rightBound + self.renderContainers.body.prevScrollLeft;
 
-          // Turn the scroll position into a percentage and make it an argument for a scroll event
-          scrollEvent.x = getScrollX(horizScrollPixels, horizScrollLength, self.renderContainers.body.prevScrollleftPercentage);
+		        // Turn the scroll position into a percentage and make it an argument for a scroll event
+		        scrollEvent.x = getScrollX(horizScrollPixels, horizScrollLength, self.renderContainers.body.prevScrollleftPercentage);
+	        }
         }
       }
 
