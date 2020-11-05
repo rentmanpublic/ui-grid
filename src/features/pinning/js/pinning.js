@@ -177,6 +177,8 @@
         else if (colDef.pinnedRight) {
           col.renderContainer = 'right';
           col.grid.createRightContainer();
+        } else {
+        	col.renderContainer = null;
         }
 
         if (!colDef.enablePinning) {
