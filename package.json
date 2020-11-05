@@ -8,7 +8,6 @@
   },
   "main": "index.js",
   "scripts": {
-    "postinstall": "grunt shell:protractor-install",
     "init": "validate-commit-msg",
     "test": "grunt",
     "commit": "git-cz",
