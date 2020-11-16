@@ -308,6 +308,8 @@
                 var $contentsElm = angular.element( $elm[0].querySelectorAll('.ui-grid-cell-contents') );
 
                 var gridLeft;
+                var headerRect;
+                var minColumnLeft;
                 var previousMouseX;
                 var totalMouseMovement;
                 var rightMoveLimit;
@@ -319,13 +321,25 @@
                 var downFn = function( event ) {
                   // Setting some variables required for calculations.
                   gridLeft = $scope.grid.element[0].getBoundingClientRect().left;
-                  if ( $scope.grid.hasLeftContainer() ) {
-                    gridLeft += $scope.grid.renderContainers.left.header[0].getBoundingClientRect().width;
-                  }
+                  headerRect = $scope.grid.renderContainers[$scope.containerId].header[0].getBoundingClientRect();
+	                // Allow the place the column 1px to the left so that it can get placed before others
+                  minColumnLeft = -1;
+
+                  // We don't want users to allow dragging columns left of the fixed columns
+	              var columns = $scope.grid.renderContainers[$scope.containerId].visibleColumnCache;
+
+	              for (var i = 0; i < columns.length; i++) {
+		            var column = columns[i];
+
+		            if (column.headerPriority !== undefined) {
+			          minColumnLeft += column.drawnWidth || column.width || column.colDef.width;
+		            }
+	              }
 
                   previousMouseX = event.pageX || (event.originalEvent ? event.originalEvent.pageX : 0);
                   totalMouseMovement = 0;
-                  rightMoveLimit = gridLeft + $scope.grid.getViewportWidth();
+	                // Allow the place the column 1px to the left so that it can get placed after others
+	                rightMoveLimit = headerRect.right + 1;
 
                   if ( event.type === 'mousedown' ) {
                     $document.on('mousemove', moveFn);
@@ -528,15 +542,15 @@
                   newElementLeft = newElementLeft < rightMoveLimit ? newElementLeft : rightMoveLimit;
 
                   // Update css of moving column to adjust to new left value or fire scroll in case column has reached edge of grid
-                  if ((currentElmLeft >= gridLeft || changeValue > 0) && (currentElmRight <= rightMoveLimit || changeValue < 0)) {
-                    movingElm.css({visibility: 'visible', 'left': (movingElm[0].offsetLeft +
-                    (newElementLeft < rightMoveLimit ? changeValue : (rightMoveLimit - currentElmLeft))) + 'px'});
+                  if ((currentElmLeft >= headerRect.left || changeValue > 0) && (currentElmRight <= rightMoveLimit || changeValue < 0)) {
+                    movingElm.css({visibility: 'visible', 'left': Math.max(movingElm[0].offsetLeft +
+                    (newElementLeft < rightMoveLimit ? changeValue : (rightMoveLimit - currentElmLeft)), minColumnLeft) + 'px'});
                   }
-                  else if (totalColumnWidth > Math.ceil(uiGridCtrl.grid.gridWidth)) {
+                  else if ($scope.containerId === 'body' && (totalColumnWidth > Math.ceil(uiGridCtrl.grid.gridWidth))) {
                     changeValue *= 8;
                     var scrollEvent = new ScrollEvent($scope.col.grid, null, null, 'uiGridHeaderCell.moveElement');
                     scrollEvent.x = {pixels: changeValue};
-                    scrollEvent.grid.scrollContainers('',scrollEvent);
+                    scrollEvent.grid.scrollContainers($scope.containerId,scrollEvent);
                   }
 
                   // Calculate total width of columns on the left of the moving column and the mouse movement
