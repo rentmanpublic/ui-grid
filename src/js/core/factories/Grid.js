@@ -1385,21 +1385,17 @@ angular.module('ui.grid')
       }
     }
 
-    for (var j = 0; j < self.rows.length; j++) {
-	  var row = self.rows[j];
+    // rows.forEach(function (row) {
+    for (var ri = 0; ri < rows.length; ri++) {
+      var row = rows[ri];
 
-	  if (rows.indexOf(row) === -1) {
-	    row.visible = false;
-	  } else {
-	  	var targetContainer = (typeof(row.renderContainer) !== 'undefined' && row.renderContainer) ? row.renderContainer : 'body';
+      var targetContainer = (typeof(row.renderContainer) !== 'undefined' && row.renderContainer) ? row.renderContainer : 'body';
 
-		// If the row is visible
-		if (row.visible) {
-		  self.renderContainers[targetContainer].visibleRowCache.push(row);
-		}
-	  }
+      // If the row is visible
+      if (row.visible) {
+        self.renderContainers[targetContainer].visibleRowCache.push(row);
+      }
     }
-
     self.api.core.raise.rowsVisibleChanged(this.api);
     self.api.core.raise.rowsRendered(this.api);
   };
