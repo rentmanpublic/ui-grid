@@ -1038,14 +1038,10 @@
                 });
 
                 $elm.on('keydown', function (evt) {
-                  switch (evt.keyCode) {
-                    case uiGridConstants.keymap.ESC:
-                      evt.stopPropagation();
-                      $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
-                      break;
-                  }
-
-                  if ($scope.deepEdit &&
+                  if (evt.keyCode === uiGridConstants.keymap.ESC) {
+                    evt.stopPropagation();
+                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
+                  } else if ($scope.deepEdit &&
                     (evt.keyCode === uiGridConstants.keymap.LEFT ||
                      evt.keyCode === uiGridConstants.keymap.RIGHT ||
                      evt.keyCode === uiGridConstants.keymap.UP ||

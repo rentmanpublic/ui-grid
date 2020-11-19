@@ -701,6 +701,20 @@
               };
 
               uiGridCtrl.cellNav.handleKeyDown = function (evt) {
+                // Get the last-focused row+col combo
+                var lastRowCol = uiGridCtrl.grid.api.cellNav.getFocusedCell();
+
+                if (evt.keyCode === uiGridConstants.keymap.ESC) {
+                  if (lastRowCol) {
+                    uiGridCtrl.grid.api.selection.unSelectRow(lastRowCol.row.entity);
+                  }
+
+                  evt.stopPropagation();
+                  evt.preventDefault();
+
+                  return false;
+                }
+
                 var direction = uiGridCellNavService.getDirection(evt);
                 if (direction === null) {
                   return null;
@@ -711,8 +725,6 @@
                   containerId = evt.uiGridTargetRenderContainerId;
                 }
 
-                // Get the last-focused row+col combo
-                var lastRowCol = uiGridCtrl.grid.api.cellNav.getFocusedCell();
                 if (lastRowCol) {
                   // Figure out which new row+combo we're navigating to
                   var rowCol = uiGridCtrl.grid.renderContainers[containerId].cellNav.getNextRowCol(direction, lastRowCol.row, lastRowCol.col);
