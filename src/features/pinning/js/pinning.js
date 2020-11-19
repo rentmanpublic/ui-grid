@@ -234,16 +234,19 @@
       },
 
       pinColumn: function(grid, col, container) {
+      	col.colDef.pinnedLeft = col.colDef.pinnedRight = false;
+
         if (container === uiGridPinningConstants.container.NONE) {
           col.renderContainer = null;
-          col.colDef.pinnedLeft = col.colDef.pinnedRight = false;
         }
         else {
           col.renderContainer = container;
           if (container === uiGridPinningConstants.container.LEFT) {
+          	col.colDef.pinnedLeft = true;
             grid.createLeftContainer();
           }
           else if (container === uiGridPinningConstants.container.RIGHT) {
+          	col.colDef.pinnedRight = true;
             grid.createRightContainer();
           }
         }
