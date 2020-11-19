@@ -843,9 +843,9 @@
               });
 
               // end editing
-              var deregOnEndCellEdit = $scope.$on(uiGridEditConstants.events.END_CELL_EDIT, function () {
+              var deregOnEndCellEdit = $scope.$on(uiGridEditConstants.events.END_CELL_EDIT, function (endCellEditEvent, jQueryEvent) {
                 endEdit();
-                $scope.grid.api.edit.raise.afterCellEdit($scope.row.entity, $scope.col.colDef, cellModel($scope), origCellValue);
+                $scope.grid.api.edit.raise.afterCellEdit($scope.row.entity, $scope.col.colDef, cellModel($scope), origCellValue, jQueryEvent);
                 deregOnEndCellEdit();
                 deregOnGridScroll();
                 deregOnCancelCellEdit();
@@ -1019,7 +1019,7 @@
                 $scope.stopEdit = function (evt) {
                   if ($scope.inputForm && !$scope.inputForm.$valid) {
                     evt.stopPropagation();
-                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
+                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT, evt);
                   }
                   else {
                     $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
