@@ -1019,10 +1019,10 @@
                 $scope.stopEdit = function (evt) {
                   if ($scope.inputForm && !$scope.inputForm.$valid) {
                     evt.stopPropagation();
-                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT, evt);
+                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
                   }
                   else {
-                    $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
+                    $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT, evt);
                   }
                   $scope.deepEdit = false;
                 };
