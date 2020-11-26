@@ -426,29 +426,30 @@
           }
 
           // Get the new width
-          var newWidth = parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10);
+          var newWidth = constrainWidth(col, parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10));
           var oldWidth = col.width;
           var hadCustomWidth = col.hasCustomWidth;
 
-          // check we're not outside the allowable bounds for this column
-          col.width = constrainWidth(col, newWidth);
+          xDiff = newWidth - col.drawnWidth;
+
+	      col.width = newWidth;
           col.hasCustomWidth = true;
 
-	        var leftWidth = getContainerWidth('left');
-	        var rightWidth = getContainerWidth('right');
-	        var gridWidth = uiGridCtrl.grid.element.width();
+          var leftWidth = getContainerWidth('left');
+	      var rightWidth = getContainerWidth('right');
+	      var gridWidth = uiGridCtrl.grid.element.width();
 
-	        if (
-	        	newWidth > oldWidth
-		        && gridWidth - (leftWidth + rightWidth) < 100
-	        ) {
-		        col.width = oldWidth;
-		        col.hasCustomWidth = hadCustomWidth;
-		        xDiff = 0;
-	        }
+	      if (
+	        newWidth > oldWidth
+		    && gridWidth - (leftWidth + rightWidth) < 100
+	      ) {
+		    col.width = oldWidth;
+		    col.hasCustomWidth = hadCustomWidth;
+		    xDiff = 0;
+	      }
 
-	        refreshCanvas(xDiff);
-	        uiGridResizeColumnsService.fireColumnSizeChanged(uiGridCtrl.grid, col.colDef, xDiff);
+	      refreshCanvas(xDiff);
+	      uiGridResizeColumnsService.fireColumnSizeChanged(uiGridCtrl.grid, col.colDef, xDiff);
 
           // stop listening of up and move events - wait for next down
           // reset the down events - we will have turned one off when this event started
