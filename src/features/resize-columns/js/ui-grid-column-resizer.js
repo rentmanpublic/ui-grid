@@ -14,8 +14,8 @@
    */
   var module = angular.module('ui.grid.resizeColumns', ['ui.grid']);
 
-  module.service('uiGridResizeColumnsService', ['gridUtil', '$q', '$rootScope',
-    function (gridUtil, $q, $rootScope) {
+  module.service('uiGridResizeColumnsService', ['gridUtil', '$q', '$rootScope', 'uiGridConstants',
+    function (gridUtil, $q, $rootScope, uiGridConstants) {
       return {
         defaultGridOptions: function(gridOptions) {
           // default option to true unless it was explicitly set to false
@@ -126,7 +126,74 @@
           } else {
             return col;
           }
-        }
+        },
+	    autoResize: function (col, grid, renderContainerElm) {
+          // Don't resize if it's disabled on this column
+		  if (col.colDef.enableColumnResizing === false) {
+			return;
+		  }
+
+		  // Go through the rendered rows and find out the max size for the data in this column
+		  var maxWidth = 0;
+
+	      // Get the cell contents so we measure correctly. For the header cell we have to account for the sort icon and the menu buttons, if present
+	      var cells = renderContainerElm.querySelectorAll('.' + uiGridConstants.COL_CLASS_PREFIX + col.uid + ' .ui-grid-cell-contents');
+	      Array.prototype.forEach.call(cells, function (cell) {
+		      // Get the cell width
+		      // gridUtil.logDebug('width', gridUtil.elementWidth(cell));
+
+		      // Account for the menu button if it exists
+		      var menuButton;
+		      if (angular.element(cell).parent().hasClass('ui-grid-header-cell')) {
+			      menuButton = angular.element(cell).parent()[0].querySelectorAll('.ui-grid-column-menu-button');
+		      }
+
+		      gridUtil.fakeElement(cell, {}, function(newElm) {
+			      // Make the element float since it's a div and can expand to fill its container
+			      var e = angular.element(newElm);
+			      e.attr('style', 'float: left');
+
+			      var width = Math.ceil(gridUtil.elementWidth(e));
+
+			      if (menuButton) {
+				      var menuButtonWidth = gridUtil.elementWidth(menuButton);
+				      width = width + menuButtonWidth;
+			      }
+
+			      if (width > maxWidth) {
+				      maxWidth = width;
+			      }
+		      });
+	      });
+
+	      // check we're not outside the allowable bounds for this column
+	      var newWidth = this.constrainWidth(col, maxWidth);
+	      var xDiff = newWidth - col.drawnWidth;
+	      col.width = newWidth;
+	      col.hasCustomWidth = true;
+
+	      grid.refreshCanvas(true).then( function() {
+		    grid.queueGridRefresh();
+		  });
+
+	      this.fireColumnSizeChanged(grid, col.colDef, xDiff);
+        },
+
+	    // Check that the requested width isn't wider than the maxWidth, or narrower than the minWidth
+	    // Returns the new recommended with, after constraints applied
+	    constrainWidth: function (col, width) {
+          var newWidth = width;
+
+          // If the new width would be less than the column's allowably minimum width, don't allow it
+          if (col.minWidth && newWidth < col.minWidth) {
+	          newWidth = col.minWidth;
+          }
+          else if (col.maxWidth && newWidth > col.maxWidth) {
+	          newWidth = col.maxWidth;
+          }
+
+          return newWidth;
+	    }
       };
     }]);
 
@@ -338,23 +405,6 @@
           });
         }
 
-        // Check that the requested width isn't wider than the maxWidth, or narrower than the minWidth
-        // Returns the new recommended with, after constraints applied
-        function constrainWidth(col, width) {
-          var newWidth = width;
-
-          // If the new width would be less than the column's allowably minimum width, don't allow it
-          if (col.minWidth && newWidth < col.minWidth) {
-            newWidth = col.minWidth;
-          }
-          else if (col.maxWidth && newWidth > col.maxWidth) {
-            newWidth = col.maxWidth;
-          }
-
-          return newWidth;
-        }
-
-
         /*
          * Our approach to event handling aims to deal with both touch devices and mouse devices
          * We register down handlers on both touch and mouse.  When a touchstart or mousedown event
@@ -390,7 +440,7 @@
           var newWidth = parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10);
 
           // check we're not outside the allowable bounds for this column
-          x = x + ( constrainWidth(col, newWidth) - newWidth ) * rtlMultiplier;
+          x = x + ( uiGridResizeColumnsService.constrainWidth(col, newWidth) - newWidth ) * rtlMultiplier;
 
           resizeOverlay.css({ left: x + 'px' });
 
@@ -426,7 +476,7 @@
           }
 
           // Get the new width
-          var newWidth = constrainWidth(col, parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10));
+          var newWidth = uiGridResizeColumnsService.constrainWidth(col, parseInt(col.drawnWidth + xDiff * rtlMultiplier, 10));
           var oldWidth = col.width;
           var hadCustomWidth = col.hasCustomWidth;
 
@@ -539,58 +589,12 @@
         var dblClickFn = function(event, args) {
           event.stopPropagation();
 
+	      // Get the parent render container element
+	      var renderContainerElm = gridUtil.closestElm($elm, '.ui-grid-render-container');
           var col = uiGridResizeColumnsService.findTargetCol($scope.col, $scope.position, rtlMultiplier);
 
-          // Don't resize if it's disabled on this column
-          if (col.colDef.enableColumnResizing === false) {
-            return;
-          }
-
-          // Go through the rendered rows and find out the max size for the data in this column
-          var maxWidth = 0;
-
-          // Get the parent render container element
-          var renderContainerElm = gridUtil.closestElm($elm, '.ui-grid-render-container');
-
-          // Get the cell contents so we measure correctly. For the header cell we have to account for the sort icon and the menu buttons, if present
-          var cells = renderContainerElm.querySelectorAll('.' + uiGridConstants.COL_CLASS_PREFIX + col.uid + ' .ui-grid-cell-contents');
-          Array.prototype.forEach.call(cells, function (cell) {
-              // Get the cell width
-              // gridUtil.logDebug('width', gridUtil.elementWidth(cell));
-
-              // Account for the menu button if it exists
-              var menuButton;
-              if (angular.element(cell).parent().hasClass('ui-grid-header-cell')) {
-                menuButton = angular.element(cell).parent()[0].querySelectorAll('.ui-grid-column-menu-button');
-              }
-
-              gridUtil.fakeElement(cell, {}, function(newElm) {
-                // Make the element float since it's a div and can expand to fill its container
-                var e = angular.element(newElm);
-                e.attr('style', 'float: left');
-
-                var width = Math.ceil(gridUtil.elementWidth(e));
-
-                if (menuButton) {
-                  var menuButtonWidth = gridUtil.elementWidth(menuButton);
-                  width = width + menuButtonWidth;
-                }
-
-                if (width > maxWidth) {
-                  maxWidth = width;
-                }
-              });
-            });
-
-          // check we're not outside the allowable bounds for this column
-          var newWidth = constrainWidth(col, maxWidth);
-          var xDiff = newWidth - col.drawnWidth;
-          col.width = newWidth;
-          col.hasCustomWidth = true;
-
-          refreshCanvas(xDiff);
-
-          uiGridResizeColumnsService.fireColumnSizeChanged(uiGridCtrl.grid, col.colDef, xDiff);        };
+          uiGridResizeColumnsService.autoResize(col, uiGridCtrl.grid, renderContainerElm);
+        };
         $elm.on('dblclick', dblClickFn);
 
         $elm.on('$destroy', function() {
