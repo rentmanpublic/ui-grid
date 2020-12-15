@@ -369,13 +369,13 @@
                 // ... and we're NOT the column the menu is on
                 else {
                   // ... move the menu to our column
-                  uiGridCtrl.columnMenuScope.showMenu($scope.col, $elm);
+                  uiGridCtrl.columnMenuScope.showMenu($scope.col, $elm, event);
                 }
               }
               // If the menu is NOT showing
               else {
                 // ... show it on our column
-                uiGridCtrl.columnMenuScope.showMenu($scope.col, $elm);
+                uiGridCtrl.columnMenuScope.showMenu($scope.col, $elm, event);
               }
             };
           }
