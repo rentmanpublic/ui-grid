@@ -479,7 +479,15 @@
             var cellNavBeginEditDereg = function() {};
 
             var setEditable = function() {
-              if ($scope.col.colDef.enableCellEdit && $scope.row.enableCellEdit !== false) {
+              var enableCellEdit = $scope.col.colDef.enableCellEdit && $scope.row.enableCellEdit !== false;
+
+              if (enableCellEdit && shouldEdit($scope.col, $scope.row, null)) {
+                $elm.addClass('ui-grid-cell-editable');
+              } else {
+                $elm.removeClass('ui-grid-cell-editable');
+              }
+
+              if (enableCellEdit) {
                 if (!$scope.beginEditEventsWired) { // prevent multiple attachments
                   registerBeginEditEvents();
                 }
