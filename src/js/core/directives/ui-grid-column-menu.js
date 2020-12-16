@@ -213,9 +213,10 @@ function ( i18nService, uiGridConstants, gridUtil ) {
      */
     getColumnElementPosition: function( $scope, column, $columnElement ) {
       var positionData = {};
+	  var rect = $columnElement[0].getBoundingClientRect();
 
-      positionData.left = $columnElement[0].offsetLeft;
-      positionData.top = $columnElement[0].offsetTop;
+	  positionData.left = rect.left;
+      positionData.top = rect.top;
       positionData.parentLeft = $columnElement[0].offsetParent.offsetLeft;
 
       // Get the grid scrollLeft
@@ -272,11 +273,7 @@ function ( i18nService, uiGridConstants, gridUtil ) {
         }
       }
 
-      var left = positionData.left + renderContainerOffset - containerScrollLeft + positionData.parentLeft + positionData.width + paddingRight;
-
-      if (left < positionData.offset + myWidth) {
-        left = Math.max(positionData.left - containerScrollLeft + positionData.parentLeft - paddingRight + myWidth, positionData.offset + myWidth);
-      }
+      var left = positionData.left + positionData.width + paddingRight;
 
       $elm.css('left', left + 'px');
       $elm.css('top', (positionData.top + positionData.height) + 'px');
@@ -302,6 +299,8 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
     templateUrl: 'ui-grid/uiGridColumnMenu',
     replace: true,
     link: function ($scope, $elm, $attrs, uiGridCtrl) {
+      var $parent = $elm.parent();
+
       uiGridColumnMenuService.initialize( $scope, uiGridCtrl );
 
       $scope.defaultMenuItems = uiGridColumnMenuService.getDefaultMenuItems( $scope );
@@ -366,6 +365,8 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
 
 
       $scope.$on('menu-hidden', function() {
+      	$parent.append($elm);
+
         var menuItems = angular.element($elm[0].querySelector('.ui-grid-menu-items'))[0];
 
         $elm[0].removeAttribute('style');
@@ -396,6 +397,7 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
 
       $scope.$on('menu-shown', function() {
         $timeout(function() {
+          $('body').append($elm);
           uiGridColumnMenuService.repositionMenu( $scope, $scope.col, $scope.colElementPosition, $elm, $scope.colElement );
 
           var hasVisibleMenuItems = $scope.menuItems.some(function (menuItem) {
