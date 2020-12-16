@@ -166,6 +166,10 @@
 		      });
 	      });
 
+	      // We add 1 pixel because the right-most column of the left renderContainer gets an incorrect width
+		  // and this is the easiest way to solve it
+		  maxWidth += 1;
+	      
 	      // check we're not outside the allowable bounds for this column
 	      var newWidth = this.constrainWidth(col, maxWidth);
 	      var xDiff = newWidth - col.drawnWidth;
