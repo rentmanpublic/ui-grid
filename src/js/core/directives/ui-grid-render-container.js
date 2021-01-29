@@ -89,18 +89,20 @@
 									scrollEvent.y = {percentage: scrollYPercentage, pixels: scrollYAmount};
 								}
 								if (event.deltaX !== 0) {
-									var scrollXAmount = event.deltaX * event.deltaFactor;
-
-									// Get the scroll percentage
 									scrollLeft = gridUtil.normalizeScrollLeft(containerCtrl.viewport, grid);
 									scrollEvent.horizontalScrollLength = (colContainer.getCanvasWidth() - colContainer.getViewportWidth());
-									var scrollXPercentage = (scrollLeft + scrollXAmount) / scrollEvent.horizontalScrollLength;
 
-									// Keep scrollPercentage within the range 0-1.
-									if (scrollXPercentage < 0) { scrollXPercentage = 0; }
-									else if (scrollXPercentage > 1) { scrollXPercentage = 1; }
+									if (scrollEvent.horizontalScrollLength > 0) {
+										// Get the scroll percentage
+										var scrollXAmount = event.deltaX * event.deltaFactor;
+										var scrollXPercentage = (scrollLeft + scrollXAmount) / scrollEvent.horizontalScrollLength;
 
-									scrollEvent.x = {percentage: scrollXPercentage, pixels: scrollXAmount};
+										// Keep scrollPercentage within the range 0-1.
+										if (scrollXPercentage < 0) { scrollXPercentage = 0; }
+										else if (scrollXPercentage > 1) { scrollXPercentage = 1; }
+
+										scrollEvent.x = {percentage: scrollXPercentage, pixels: scrollXAmount};
+									}
 								}
 
 								// Let the parent container scroll if the grid is already at the top/bottom
