@@ -526,23 +526,32 @@
                     return;
                   }
 
-                  if (rowCol.row === $scope.row && rowCol.col === $scope.col && !$scope.col.colDef.enableCellEditOnFocus) {
+                  if (rowCol.row === $scope.row && rowCol.col === $scope.col) {
                     // important to do this before scrollToIfNecessary
                     beginEditKeyDown(evt);
                   }
                 });
 
-                cellNavNavigateDereg = uiGridCtrl.grid.api.cellNav.on.navigate($scope, function (newRowCol, oldRowCol, evt) {
-                  if ($scope.col.colDef.enableCellEditOnFocus) {
-                    // Don't begin edit if the cell hasn't changed
-                    if (newRowCol.row === $scope.row && newRowCol.col === $scope.col &&
-                      (evt === null || (evt && (evt.type === 'click' || evt.type === 'keydown' || evt.type === 'focus')))) {
-                      $timeout(function() {
-                        beginEdit(evt);
-                      });
+                if ($scope.col.colDef.enableCellEditOnFocus) {
+                  cellNavNavigateDereg = uiGridCtrl.grid.api.cellNav.on.navigate(
+                    $scope,
+                    function (newRowCol, oldRowCol, evt) {
+                      // Don't begin edit if the cell hasn't changed
+                      if (
+                          newRowCol.row === $scope.row
+                          && newRowCol.col === $scope.col
+                          && evt
+                          && evt.type === 'click'
+                      ) {
+                        $timeout(
+                            function () {
+                              beginEdit(evt);
+                            }
+                        );
+                      }
                     }
-                  }
-                });
+                  );
+                }
 
 	              var cellHasFocus = false;
 
