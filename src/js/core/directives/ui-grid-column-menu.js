@@ -275,6 +275,11 @@ function ( i18nService, uiGridConstants, gridUtil ) {
 
       var left = positionData.left + positionData.width + paddingRight;
 
+      if (left - myWidth < 0) {
+      	// menu width (50px) + 16px
+      	left = 66 + myWidth;
+      }
+
       $elm.css('left', left + 'px');
       $elm.css('top', (positionData.top + positionData.height) + 'px');
     }
