@@ -143,7 +143,14 @@ angular.module('ui.grid')
       }
 
       var result = 0;
-      var visibleRows = self.grid.getVisibleRows();
+      //[RM4-18931]
+      // We don't want to process group headers since they contain the total of all individual rows
+      // which means that those values would be counted double
+      var visibleRows = self.grid.rows.filter(
+        function(row){
+          return row.groupHeader === false;
+        }
+      );
 
       var cellValues = function() {
         var values = [];
@@ -161,7 +168,7 @@ angular.module('ui.grid')
         self.aggregationValue = self.aggregationType(visibleRows, self);
       }
       else if (self.aggregationType === uiGridConstants.aggregationTypes.count) {
-        self.aggregationValue = self.grid.getVisibleRowCount();
+        self.aggregationValue = visibleRows.length;
       }
       else if (self.aggregationType === uiGridConstants.aggregationTypes.sum) {
         cellValues().forEach(function (value) {
