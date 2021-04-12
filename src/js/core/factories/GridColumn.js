@@ -148,7 +148,7 @@ angular.module('ui.grid')
       // which means that those values would be counted double
       var visibleRows = self.grid.rows.filter(
         function(row){
-          return row.groupHeader === false;
+          return !row.groupHeader;
         }
       );
 
