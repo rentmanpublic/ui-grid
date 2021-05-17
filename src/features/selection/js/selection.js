@@ -594,7 +594,12 @@
           for (var i = fromRow; i <= toRow; i++) {
             var rowToSelect = grid.renderContainers.body.visibleRowCache[i];
             if (rowToSelect) {
-              if (!rowToSelect.isSelected && rowToSelect.enableSelection !== false) {
+              if (
+                  !rowToSelect.isSelected
+                  && rowToSelect.enableSelection !== false
+                  && rowToSelect.entity.isHeader === false
+              )
+              {
                 rowToSelect.setSelected(true);
                 grid.selection.lastSelectedRow = rowToSelect;
                 service.decideRaiseSelectionEvent(grid, rowToSelect, changedRows, evt);
