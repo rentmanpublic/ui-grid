@@ -402,6 +402,8 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
 
       $scope.$on('menu-shown', function() {
         $timeout(function() {
+          $elm.css('zIndex', getHighestZIndexFromParent());
+
           $('body').append($elm);
           uiGridColumnMenuService.repositionMenu( $scope, $scope.col, $scope.colElementPosition, $elm, $scope.colElement );
 
@@ -439,6 +441,31 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
         $scope.grid.refresh();
         $scope.hideMenu();
       };
+
+      function getHighestZIndexFromParent () {
+      	  var element = $parent;
+	      var maxZIndex = 1;
+
+	      do {
+		      var zIndex = element.css(
+			      'zIndex'
+		      );
+
+		      if (zIndex !== 'auto') {
+		      	maxZIndex = Math.max(
+		      		maxZIndex,
+			        parseInt(
+				        zIndex,
+				        10
+			        )
+		        );
+		      }
+
+		      element = element.parent();
+	      } while (element.parent().length !== 0);
+
+	      return maxZIndex;
+      }
 
       function addKeydownHandlersToMenu() {
         var menu = angular.element($elm[0].querySelector('.ui-grid-menu-items'))[0],
