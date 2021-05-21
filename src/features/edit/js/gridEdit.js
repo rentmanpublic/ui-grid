@@ -66,6 +66,20 @@
           var publicApi = {
             events: {
               edit: {
+	              /**
+	               * @ngdoc event
+	               * @name editorCreated
+	               * @eventOf  ui.grid.edit.api:PublicApi
+	               * @description raised when the editor cell is appended to the cell
+	               * <pre>
+	               *      gridApi.edit.on.editorCreated(scope,function(rowEntity, colDef) {})
+	               * </pre>
+	               * @param {object} rowEntity the options.data element that was edited
+	               * @param {object} colDef the column that was edited
+	               * @param {HTMLElement} inputElement The added element
+	               */
+	              editorCreated: function (rowEntity, colDef, inputElement) {
+	              },
                 /**
                  * @ngdoc event
                  * @name afterCellEdit
@@ -843,6 +857,8 @@
                 $compile(cellElement)(editCellScope);
                 var gridCellContentsEl = angular.element($elm.children()[0]);
                 gridCellContentsEl.addClass('ui-grid-cell-contents-hidden');
+
+                $scope.grid.api.edit.raise.editorCreated($scope.row.entity, $scope.col.colDef, cellElement);
               };
               if (!$rootScope.$$phase) {
                 $scope.$apply(createEditor);
