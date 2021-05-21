@@ -541,7 +541,10 @@
                           newRowCol.row === $scope.row
                           && newRowCol.col === $scope.col
                           && evt
-                          && evt.type === 'click'
+	                      && (
+		                      evt.type === 'click'
+		                      || evt.keyCode === uiGridConstants.keymap.ENTER
+	                      )
                       ) {
                         $timeout(
                             function () {
