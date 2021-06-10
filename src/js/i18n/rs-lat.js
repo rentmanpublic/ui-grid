@@ -41,8 +41,8 @@
 					text: 'Odaberite kolonu:'
 				},
 				sort: {
-					ascending: 'Sortiraj po rastućem redosledu',
-					descending: 'Sortiraj po opadajućem redosledu',
+					ascending: 'Sortiraj uzlazno',
+					descending: 'Sortiraj silazno',
 					none: 'Bez Sortiranja',
 					remove: 'Ukloni Sortiranje'
 				},
@@ -103,7 +103,7 @@
 				},
 				grouping: {
 					group: 'Grupiši',
-					ungroup: 'Odrupiši',
+					ungroup: 'Odgrupiši',
 					aggregate_count: 'Agg: Broj',
 					aggregate_sum: 'Agg: Suma',
 					aggregate_max: 'Agg: Maksimum',
