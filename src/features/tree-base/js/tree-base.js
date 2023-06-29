@@ -1086,6 +1086,7 @@
        */
       createTree: function( grid, renderableRows ) {
         var currentLevel = -1,
+            parentsCache = {},
           parents = [],
           currentState;
 
@@ -1093,7 +1094,7 @@
         grid.treeBase.numberLevels = 0;
 
         var aggregations = service.getAggregations( grid );
-        
+
         function createNode( row ) {
           if ( !row.internalRow && row.treeLevel !== row.entity.$$treeLevel ) {
             row.treeLevel = row.entity.$$treeLevel;
@@ -1116,16 +1117,32 @@
             }
           }
 
+          // If row header as parent exists in parentsCache
+          if (
+              typeof row.treeLevel !== 'undefined' &&
+              row.treeLevel !== null &&
+              row.treeLevel >= 0 &&
+              parentsCache.hasOwnProperty(row.uid)
+          ) {
+            parents.push(parentsCache[row.uid]);
+          }
+
           // aggregate if this is a leaf node
           if ( ( typeof(row.treeLevel) === 'undefined' || row.treeLevel === null || row.treeLevel < 0 ) && row.visible  ) {
             service.aggregate( grid, row, parents );
           }
 
           // add this node to the tree
-          service.addOrUseNode(grid, row, parents, aggregations);
+          if (!parentsCache.hasOwnProperty(row.uid)) {
+            service.addOrUseNode(grid, row, parents, aggregations);
+          }
 
           if ( typeof(row.treeLevel) !== 'undefined' && row.treeLevel !== null && row.treeLevel >= 0 ) {
-            parents.push(row);
+            if (!parentsCache.hasOwnProperty(row.uid)) {
+              parentsCache[row.uid] = row;
+              parents.push(row);
+            }
+
             currentLevel++;
             currentState = service.setCurrentState(parents);
           }
