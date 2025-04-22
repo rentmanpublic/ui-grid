@@ -583,6 +583,20 @@
           var selectedRows = service.getSelectedRows(grid);
           var fromRow = selectedRows.length > 0 ? grid.renderContainers.body.visibleRowCache.indexOf(grid.selection.lastSelectedRow) : 0;
           var toRow = grid.renderContainers.body.visibleRowCache.indexOf(row);
+
+	        // [RM4-35958] If a row is deselected with shift, we set only that row to false, fire the required event
+	        // And bail out, so that the rest remains unaffected
+	        if (toRow > -1) {
+		        const selectedRow = grid.renderContainers.body.visibleRowCache[toRow];
+		        if (selectedRow.isSelected && selectedRow.enableSelection !== false) {
+			        const changedRows = [];
+			        selectedRow.setSelected(false);
+			        service.decideRaiseSelectionEvent(grid, selectedRow, changedRows, evt);
+			        service.decideRaiseSelectionBatchEvent(grid, changedRows, evt);
+			        return;
+		        }
+	        }
+
           // reverse select direction
           if (fromRow > toRow) {
             var tmp = fromRow;
