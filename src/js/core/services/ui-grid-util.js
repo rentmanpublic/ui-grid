@@ -457,8 +457,14 @@ module.service('gridUtil', ['$log', '$window', '$document', '$http', '$templateC
 
     },
 
+    __scrollBarWidth: null,
+
     // Thanks to http://stackoverflow.com/a/13382873/888165
     getScrollbarWidth: function() {
+		if (s.__scrollBarWidth !== null) {
+			return s.__scrollBarWidth;
+		}
+
         var outer = document.createElement("div");
 
         outer.style.visibility = "hidden";
@@ -481,7 +487,9 @@ module.service('gridUtil', ['$log', '$window', '$document', '$http', '$templateC
         // remove divs
         outer.parentNode.removeChild(outer);
 
-        return widthNoScroll - widthWithScroll;
+        s.__scrollBarWidth = widthNoScroll - widthWithScroll;
+
+		return s.__scrollBarWidth;
     },
 
     swap: function( elem, options, callback, args ) {
