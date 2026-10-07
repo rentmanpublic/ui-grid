@@ -163,6 +163,54 @@ describe('rowSorter', function() {
     });
   });
 
+  describe('getSortFn cache', function() {
+    function sortFnA() { return 0; }
+    function sortFnB() { return 0; }
+
+    function buildGrid(sortingAlgorithm) {
+      var grid = gridClassFactory.createGrid({
+        columnDefs: [
+          { name: 'name', type: 'string', sortingAlgorithm: sortingAlgorithm }
+        ]
+      });
+
+      grid.buildColumns();
+      $scope.$digest();
+
+      return grid;
+    }
+
+    it('should use each grid\'s own sorting algorithm for columns with the same name', function() {
+      var gridA = buildGrid(sortFnA);
+      var gridB = buildGrid(sortFnB);
+
+      expect(rowSorter.getSortFn(gridA, gridA.getColumn('name'), [])).toBe(sortFnA);
+      expect(rowSorter.getSortFn(gridB, gridB.getColumn('name'), [])).toBe(sortFnB);
+    });
+
+    it('should not reuse a guessed sort function for a same-named column with a sorting algorithm', function() {
+      var gridA = buildGrid(undefined);
+      var gridB = buildGrid(sortFnB);
+
+      expect(rowSorter.getSortFn(gridA, gridA.getColumn('name'), [])).toBe(rowSorter.sortAlpha);
+      expect(rowSorter.getSortFn(gridB, gridB.getColumn('name'), [])).toBe(sortFnB);
+    });
+
+    it('should use the new sorting algorithm when the columns are rebuilt', function() {
+      var grid = buildGrid(sortFnA);
+      var col = grid.getColumn('name');
+
+      expect(rowSorter.getSortFn(grid, col, [])).toBe(sortFnA);
+
+      grid.options.columnDefs[0].sortingAlgorithm = sortFnB;
+      grid.buildColumns();
+      $scope.$digest();
+
+      expect(grid.getColumn('name')).toBe(col);
+      expect(rowSorter.getSortFn(grid, col, [])).toBe(sortFnB);
+    });
+  });
+
   describe('sort by date column', function() {
     var grid, rows, cols;
 

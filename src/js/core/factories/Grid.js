@@ -883,6 +883,8 @@ angular.module('ui.grid')
       else {
         // tell updateColumnDef that the column was pre-existing
         col.updateColumnDef(colDef, false);
+        // The new colDef may have a different sortingAlgorithm or type, so don't keep using the cached sort function
+        delete rowSorter.colSortFnCache[col.uid];
       }
 
       self.columnBuilders.forEach(function (builder) {
