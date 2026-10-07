@@ -25,7 +25,9 @@ module.service('rowSorter', ['$parse', 'uiGridConstants', function ($parse, uiGr
   var rowSorter = {
     // Cache of sorting functions. Once we create them, we don't want to keep re-doing it
     //   this takes a piece of data from the cell and tries to determine its type and what sorting
-    //   function to use for it
+    //   function to use for it.
+    //   Keyed by column uid: rowSorter is shared by every grid, and different grids can have columns with the
+    //   same name but a different sorting algorithm.
     colSortFnCache: {}
   };
 
@@ -274,7 +276,7 @@ module.service('rowSorter', ['$parse', 'uiGridConstants', function ($parse, uiGr
    * @methodOf ui.grid.class:rowSorter
    * @name getSortFn
    * @description Get the sort function for the column.  Looks first in
-   * rowSorter.colSortFnCache using the column name, failing that it
+   * rowSorter.colSortFnCache using the column uid, failing that it
    * looks at col.sortingAlgorithm (and puts it in the cache), failing that
    * it guesses the sort algorithm based on the data type.
    *
@@ -294,18 +296,18 @@ module.service('rowSorter', ['$parse', 'uiGridConstants', function ($parse, uiGr
     var sortFn, item;
 
     // See if we already figured out what to use to sort the column and have it in the cache
-    if (rowSorter.colSortFnCache[col.colDef.name]) {
-      sortFn = rowSorter.colSortFnCache[col.colDef.name];
+    if (rowSorter.colSortFnCache[col.uid]) {
+      sortFn = rowSorter.colSortFnCache[col.uid];
     }
     // If the column has its OWN sorting algorithm, use that
     else if (col.sortingAlgorithm !== undefined) {
       sortFn = col.sortingAlgorithm;
-      rowSorter.colSortFnCache[col.colDef.name] = col.sortingAlgorithm;
+      rowSorter.colSortFnCache[col.uid] = col.sortingAlgorithm;
     }
     // Always default to sortAlpha when sorting after a cellFilter
     else if ( col.sortCellFiltered && col.cellFilter ) {
       sortFn = rowSorter.sortAlpha;
-      rowSorter.colSortFnCache[col.colDef.name] = sortFn;
+      rowSorter.colSortFnCache[col.uid] = sortFn;
     }
     // Try and guess what sort function to use
     else {
@@ -314,7 +316,7 @@ module.service('rowSorter', ['$parse', 'uiGridConstants', function ($parse, uiGr
 
       // If we found a sort function, cache it
       if (sortFn) {
-        rowSorter.colSortFnCache[col.colDef.name] = sortFn;
+        rowSorter.colSortFnCache[col.uid] = sortFn;
       }
       else {
         // We assign the alpha sort because anything that is null/undefined will never get passed to
