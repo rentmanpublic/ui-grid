@@ -66,20 +66,20 @@
           var publicApi = {
             events: {
               edit: {
-	              /**
-	               * @ngdoc event
-	               * @name editorCreated
-	               * @eventOf  ui.grid.edit.api:PublicApi
-	               * @description raised when the editor cell is appended to the cell
-	               * <pre>
-	               *      gridApi.edit.on.editorCreated(scope,function(rowEntity, colDef) {})
-	               * </pre>
-	               * @param {object} rowEntity the options.data element that was edited
-	               * @param {object} colDef the column that was edited
-	               * @param {HTMLElement} inputElement The added element
-	               */
-	              editorCreated: function (rowEntity, colDef, inputElement) {
-	              },
+                /**
+                 * @ngdoc event
+                 * @name editorCreated
+                 * @eventOf  ui.grid.edit.api:PublicApi
+                 * @description raised when the editor cell is appended to the cell
+                 * <pre>
+                 *      gridApi.edit.on.editorCreated(scope,function(rowEntity, colDef) {})
+                 * </pre>
+                 * @param {object} rowEntity the options.data element that was edited
+                 * @param {object} colDef the column that was edited
+                 * @param {HTMLElement} inputElement The added element
+                 */
+                editorCreated: function (rowEntity, colDef, inputElement) {
+                },
                 /**
                  * @ngdoc event
                  * @name afterCellEdit
@@ -555,10 +555,10 @@
                           newRowCol.row === $scope.row
                           && newRowCol.col === $scope.col
                           && evt
-	                      && (
-		                      evt.type === 'click'
-		                      || evt.keyCode === uiGridConstants.keymap.ENTER
-	                      )
+                          && (
+                              evt.type === 'click'
+                              || evt.keyCode === uiGridConstants.keymap.ENTER
+                          )
                       ) {
                         $timeout(
                             function () {
@@ -570,38 +570,38 @@
                   );
                 }
 
-	              var cellHasFocus = false;
+                var cellHasFocus = false;
 
-	              cellNavBeginEditDereg = $scope.$on(
-		              uiGridCellNavConstants.CELL_NAV_EVENT,
-		              function (evt, newRowCol, modifierDown, originEvt) {
-			              if (
-				              newRowCol === undefined
-				              || newRowCol.row !== $scope.row
-				              || newRowCol.col !== $scope.col
-			              ) {
-				              cellHasFocus = false;
+                cellNavBeginEditDereg = $scope.$on(
+                  uiGridCellNavConstants.CELL_NAV_EVENT,
+                  function (evt, newRowCol, modifierDown, originEvt) {
+                    if (
+                      newRowCol === undefined
+                      || newRowCol.row !== $scope.row
+                      || newRowCol.col !== $scope.col
+                    ) {
+                      cellHasFocus = false;
 
-				              return;
-			              }
+                      return;
+                    }
 
-			              if (
-			              	originEvt === undefined
-			                || originEvt === null
-				            || originEvt.type === 'focus'
-			              ) {
-				              return;
-			              }
+                    if (
+                      originEvt === undefined
+                      || originEvt === null
+                      || originEvt.type === 'focus'
+                    ) {
+                      return;
+                    }
 
-			              if (!cellHasFocus) {
-				              cellHasFocus = true;
+                    if (!cellHasFocus) {
+                      cellHasFocus = true;
 
-				              return;
-			              }
+                      return;
+                    }
 
-			              beginEdit(originEvt);
-		              }
-	              );
+                    beginEdit(originEvt);
+                  }
+                );
               }
 
               $scope.beginEditEventsWired = true;
