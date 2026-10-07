@@ -322,24 +322,24 @@
                   // Setting some variables required for calculations.
                   gridLeft = $scope.grid.element[0].getBoundingClientRect().left;
                   headerRect = $scope.grid.renderContainers[$scope.containerId].header[0].getBoundingClientRect();
-	                // Allow the place the column 1px to the left so that it can get placed before others
+                  // Allow the place the column 1px to the left so that it can get placed before others
                   minColumnLeft = -1;
 
                   // We don't want users to allow dragging columns left of the fixed columns
-	              var columns = $scope.grid.renderContainers[$scope.containerId].visibleColumnCache;
+                  var columns = $scope.grid.renderContainers[$scope.containerId].visibleColumnCache;
 
-	              for (var i = 0; i < columns.length; i++) {
-		            var column = columns[i];
+                  for (var i = 0; i < columns.length; i++) {
+                    var column = columns[i];
 
-		            if (column.headerPriority !== undefined) {
-			          minColumnLeft += column.drawnWidth || column.width || column.colDef.width;
-		            }
-	              }
+                    if (column.headerPriority !== undefined) {
+                      minColumnLeft += column.drawnWidth || column.width || column.colDef.width;
+                    }
+                  }
 
                   previousMouseX = event.pageX || (event.originalEvent ? event.originalEvent.pageX : 0);
                   totalMouseMovement = 0;
-	                // Allow the place the column 1px to the left so that it can get placed after others
-	                rightMoveLimit = headerRect.right + 1;
+                  // Allow the place the column 1px to the left so that it can get placed after others
+                  rightMoveLimit = headerRect.right + 1;
 
                   if ( event.type === 'mousedown' ) {
                     $document.on('mousemove', moveFn);

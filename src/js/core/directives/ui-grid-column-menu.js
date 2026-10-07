@@ -213,9 +213,9 @@ function ( i18nService, uiGridConstants, gridUtil ) {
      */
     getColumnElementPosition: function( $scope, column, $columnElement ) {
       var positionData = {};
-	  var rect = $columnElement[0].getBoundingClientRect();
+      var rect = $columnElement[0].getBoundingClientRect();
 
-	  positionData.left = rect.left;
+      positionData.left = rect.left;
       positionData.top = rect.top;
       positionData.parentLeft = $columnElement[0].offsetParent.offsetLeft;
 
@@ -276,8 +276,8 @@ function ( i18nService, uiGridConstants, gridUtil ) {
       var left = positionData.left + positionData.width + paddingRight;
 
       if (left - myWidth < 0) {
-      	// menu width (50px) + 16px
-      	left = 66 + myWidth;
+        // menu width (50px) + 16px
+        left = 66 + myWidth;
       }
 
       $elm.css('left', left + 'px');
@@ -370,7 +370,7 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
 
 
       $scope.$on('menu-hidden', function() {
-      	$parent.append($elm);
+        $parent.append($elm);
 
         var menuItems = angular.element($elm[0].querySelector('.ui-grid-menu-items'))[0];
 
@@ -410,13 +410,13 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
           var hasVisibleMenuItems = $scope.menuItems.some(function (menuItem) {
               return menuItem.shown();
           });
-          
+
           // automatically set the focus to the first button element in the now open menu.
           if (hasVisibleMenuItems) {
             gridUtil.focus.bySelector($document, '.ui-grid-menu-items .ui-grid-menu-item:not(.ng-hide)', true)
                 .catch(angular.noop);
           }
-          
+
           delete $scope.colElementPosition;
           delete $scope.columnElement;
           addKeydownHandlersToMenu();
@@ -443,28 +443,28 @@ function ($timeout, gridUtil, uiGridConstants, uiGridColumnMenuService, $documen
       };
 
       function getHighestZIndexFromParent () {
-      	  var element = $parent;
-	      var maxZIndex = 1;
+        var element = $parent;
+        var maxZIndex = 1;
 
-	      do {
-		      var zIndex = element.css(
-			      'zIndex'
-		      );
+        do {
+          var zIndex = element.css(
+            'zIndex'
+          );
 
-		      if (zIndex !== 'auto') {
-		      	maxZIndex = Math.max(
-		      		maxZIndex,
-			        parseInt(
-				        zIndex,
-				        10
-			        )
-		        );
-		      }
+          if (zIndex !== 'auto') {
+            maxZIndex = Math.max(
+              maxZIndex,
+              parseInt(
+                zIndex,
+                10
+              )
+            );
+          }
 
-		      element = element.parent();
-	      } while (element.parent().length !== 0);
+          element = element.parent();
+        } while (element.parent().length !== 0);
 
-	      return maxZIndex;
+        return maxZIndex;
       }
 
       function addKeydownHandlersToMenu() {

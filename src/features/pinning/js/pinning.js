@@ -178,7 +178,7 @@
           col.renderContainer = 'right';
           col.grid.createRightContainer();
         } else {
-        	col.renderContainer = null;
+          col.renderContainer = null;
         }
 
         if (!colDef.enablePinning) {
@@ -234,7 +234,7 @@
       },
 
       pinColumn: function(grid, col, container) {
-      	col.colDef.pinnedLeft = col.colDef.pinnedRight = false;
+        col.colDef.pinnedLeft = col.colDef.pinnedRight = false;
 
         if (container === uiGridPinningConstants.container.NONE) {
           col.renderContainer = null;
@@ -242,11 +242,11 @@
         else {
           col.renderContainer = container;
           if (container === uiGridPinningConstants.container.LEFT) {
-          	col.colDef.pinnedLeft = true;
+            col.colDef.pinnedLeft = true;
             grid.createLeftContainer();
           }
           else if (container === uiGridPinningConstants.container.RIGHT) {
-          	col.colDef.pinnedRight = true;
+            col.colDef.pinnedRight = true;
             grid.createRightContainer();
           }
         }
